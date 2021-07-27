@@ -1,0 +1,5 @@
+torch
+torchvision
+nltk
+pytorch-lightning
+transformers
