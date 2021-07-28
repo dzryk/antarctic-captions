@@ -83,8 +83,8 @@ def generate(args, net, loader):
             caps = [tgt[i][idx] for i in range(args.ncaptions)]
             inputs = net.tokenizer.encode(x, return_tensors='pt').to(args.device)
             out = net.model.generate(inputs,
-                                     do_sample=False,
-                                     num_beams=args.num_return_sequences,
+                                     do_sample=args.do_sample,
+                                     num_beams=args.num_beams,
                                      temperature=args.temperature,
                                      top_p=args.top_p,
                                      num_return_sequences=args.num_return_sequences)
