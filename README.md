@@ -39,8 +39,8 @@ Download COCO dataset. Inside `download.sh`, set download_dir to a location wher
 If you want to use a pre-existing cache, you can download them:
 
 ```
-!wget -m -np -c -U "eye02" -w 2 -R "index.html*" "https://the-eye.eu/public/AI/models/antarctic-captions/postcache.txt"
-!wget -m -np -c -U "eye02" -w 2 -R "index.html*" "https://the-eye.eu/public/AI/models/antarctic-captions/postcache.npy"
+wget -m -np -c -U "eye02" -w 2 -R "index.html*" "https://the-eye.eu/public/AI/models/antarctic-captions/postcache.txt"
+wget -m -np -c -U "eye02" -w 2 -R "index.html*" "https://the-eye.eu/public/AI/models/antarctic-captions/postcache.npy"
 ```
 
 To compute a new cache using COCO, run the following. A cache consists of two files: a txt file containing one entry on each line as well as a .npy file containing CLIP embeddings for each line. Full list of settings can be found in `compute_cache.py`.
