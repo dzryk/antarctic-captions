@@ -1,3 +1,8 @@
+pycocotools
+scikit-learn
+scipy
+matplotlib
+ftfy
 torch
 torchvision
 nltk
