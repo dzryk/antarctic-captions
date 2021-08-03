@@ -30,10 +30,10 @@ Clone CLIP into this project's repository:
 git clone https://github.com/openai/CLIP
 ```
 
-Download COCO dataset. Inside `download.sh`, set download_dir to a location where you want to store the data. Then run:
+Download COCO dataset. Inside `download_coco.sh`, set download_dir to a location where you want to store the data. Then run:
 
 ```
-./download.sh
+./download_coco.sh
 ```
 
 If you want to use a pre-existing cache, you can download them:
@@ -46,13 +46,13 @@ wget -m -np -c -U "eye02" -w 2 -R "index.html*" "https://the-eye.eu/public/AI/mo
 To compute a new cache using COCO, run the following. A cache consists of two files: a txt file containing one entry on each line as well as a .npy file containing CLIP embeddings for each line. Full list of settings can be found in `compute_cache.py`.
 
 ```
-python3 compute_cache.py --datadir=[path to COCO dir] --textfile=[path to save text] --embfile=[path to save numpy file]
+python3 compute_cache.py --datadir=[path to train folder] --textfile=[path to save text] --embfile=[path to save numpy file]
 ```
 
 To train a model
 
 ```
-python3 trainer.py --datadir=[path to COCO dir] --textfile=[path to cache text] --embfile=[path to cache numpy file]
+python3 trainer.py --datadir=[path to store logs/ckpts] --train_datadir=[path to train folder] --dev_datadir=[path to dev folder] --textfile=[path to cache text] --embfile=[path to cache numpy file]
 ```
 
 Full list of settings are found in `trainer.py`. The pre-trained model available for download was trained for 6 epochs. You can already start to obtain caption-like outputs after a few thousand steps.
@@ -62,7 +62,7 @@ Full list of settings are found in `trainer.py`. The pre-trained model available
 To generate captions on the development set, run:
 
 ```
-python3 sampler.py --datadir=[path to COCO dir] --textfile=[path to cache text] --embfile=[path to cache numpy file] --savedir=[where to save outputs] --ckpt=[path to model checkpoint]
+python3 sampler.py --datadir=[path to dev folder] --textfile=[path to cache text] --embfile=[path to cache numpy file] --savedir=[where to save outputs] --ckpt=[path to model checkpoint]
 ```
 
 Full list of settings are found in `sampler.py`. NOTE: this function differs than the generation done in the notebook. By default, captions here are generated via beam search, whereas sampling and re-scoring is done in the notebook. 
