@@ -26,7 +26,6 @@ def main():
     parser.add_argument('--do_sample', type=bool, default=False)
     parser.add_argument('--temperature', type=float, default=1.0)
     parser.add_argument('--top_p', type=float, default=1.0)
-    parser.add_argument('--ncaptions', type=int, default=5)
     parser.add_argument('--device', type=str, default='cuda:0')
     args = parser.parse_args()
 
@@ -47,9 +46,11 @@ def main():
 
     # Load development set
     datamodule = dataset.DataModule(
+        train_datadir=None,
+        dev_datadir=args.datadir,
         batch_size=args.batch_size,
         preprocess=preprocess,
-        datadir=args.datadir)
+        all_captions=True)
     datamodule.setup()
     dev = datamodule.val_dataloader()
 
@@ -62,7 +63,7 @@ def main():
     with open(predfile, 'w') as f:
         for line in preds:
             f.write(line.strip() + '\n')
-    for idx in range(args.ncaptions):
+    for idx in range(len(refs[0])):
         ref_file = os.path.join(args.savedir, f'ref{idx}.txt')
         with open(ref_file, 'w') as f:
             for group in refs:

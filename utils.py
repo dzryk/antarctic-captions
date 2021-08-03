@@ -80,7 +80,6 @@ def generate(args, net, loader):
                                 topk=args.topk,
                                 return_images=True)
         for idx, x in enumerate(src):
-            caps = [tgt[i][idx] for i in range(args.ncaptions)]
             inputs = net.tokenizer.encode(x, return_tensors='pt').to(args.device)
             out = net.model.generate(inputs,
                                      do_sample=args.do_sample,
@@ -94,5 +93,5 @@ def generate(args, net, loader):
             out = clip_rescoring(args, net, candidates, imgs[idx][None,:])
             print(out)
             pred.append(out)
-            ref.append(caps)
+            ref.append(tgt[idx])
     return pred, ref

@@ -13,12 +13,10 @@ def main():
     parser.add_argument('--datadir', type=str)
     parser.add_argument('--textfile', type=str)
     parser.add_argument('--embfile', type=str)
-    parser.add_argument('--split', type=str, default='train2017')
     parser.add_argument('--topk', type=int, default=25000)
     parser.add_argument('--batch_size', type=int, default=1000)
     parser.add_argument('--clip_model', type=str, default='ViT-B/16')
     parser.add_argument('--prefix', type=str, default='')
-    parser.add_argument('--ncaptions', type=int, default=5)
     parser.add_argument('--device', type=str, default='cuda:0')
     args = parser.parse_args()
 

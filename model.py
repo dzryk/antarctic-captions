@@ -43,9 +43,6 @@ class Model(pl.LightningModule):
                               cache=self.cache,
                               cache_emb=cache_emb,
                               topk=self.hparams.topk)
-
-        # Uses a different caption per image depending on epoch.
-        y = y[self.current_epoch % self.hparams.ncaptions]
         
         enc_inputs = self.tokenizer(x,
                                     padding="max_length",

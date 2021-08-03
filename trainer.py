@@ -16,7 +16,9 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 def main():
     # Args
     parser = ArgumentParser()
-    parser.add_argument('--datadir', type=str, default='.')
+    parser.add_argument('--datadir', type=str)
+    parser.add_argument('--train_datadir', type=str)
+    parser.add_argument('--dev_datadir', type=str)
     parser.add_argument('--textfile', type=str)
     parser.add_argument('--embfile', type=str)
     parser.add_argument('--clip_model', type=str, default='ViT-B/16')
@@ -30,7 +32,6 @@ def main():
     parser.add_argument('--val_after_n_epochs', type=int, default=1)
     parser.add_argument('--tmax', type=int, default=1e5)
     parser.add_argument('--save_top_k', type=int, default=10)
-    parser.add_argument('--ncaptions', type=int, default=5)
     parser.add_argument('--lrate', type=float, default=3e-4)
     args = parser.parse_args()
 
@@ -51,11 +52,11 @@ def main():
         filename='-{epoch:02d}-{vloss:.3f}',
         save_top_k=args.save_top_k)
     datamodule = dataset.DataModule(
+        train_datadir=args.train_datadir,
+        dev_datadir=args.dev_datadir,
         batch_size=args.batch_size,
         nworkers=args.nworkers,
-        preprocess=preprocess,
-        ncaptions=args.ncaptions,
-        datadir=args.datadir)
+        preprocess=preprocess)
     net = model.Model(args, cache=cache, cache_emb=cache_emb)
     trainer = pl.Trainer(
         default_root_dir=args.datadir,
@@ -63,7 +64,8 @@ def main():
         tpu_cores=args.tpu_cores,
         max_steps=args.tmax,
         callbacks=[ckpt_callback],
-        check_val_every_n_epoch=args.val_after_n_epochs)
+        #check_val_every_n_epoch=args.val_after_n_epochs
+        val_check_interval=2500)
     trainer.fit(net, datamodule)
 
 
