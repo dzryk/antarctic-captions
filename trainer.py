@@ -64,8 +64,7 @@ def main():
         tpu_cores=args.tpu_cores,
         max_steps=args.tmax,
         callbacks=[ckpt_callback],
-        #check_val_every_n_epoch=args.val_after_n_epochs
-        val_check_interval=2500)
+        check_val_every_n_epoch=args.val_after_n_epochs)
     trainer.fit(net, datamodule)
 
 
