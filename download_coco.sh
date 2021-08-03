@@ -13,3 +13,5 @@ unzip ${download_dir}/val2017.zip -d ${download_dir}
 rm ${download_dir}/annotations_trainval2017.zip
 rm ${download_dir}/train2017.zip
 rm ${download_dir}/val2017.zip
+
+python3 coco.py --datadir=${download_dir}
