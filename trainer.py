@@ -1,3 +1,7 @@
+import sys
+sys.path.append('./clip-grams')
+
+import json
 import os
 import torch
 import numpy as np
@@ -9,6 +13,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 
 import dataset
 import model
+import clipgrams
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -21,6 +26,7 @@ def main():
     parser.add_argument('--dev_datadir', type=str)
     parser.add_argument('--textfile', type=str)
     parser.add_argument('--embfile', type=str)
+    parser.add_argument('--index_dir', type=str, default=None)
     parser.add_argument('--clip_model', type=str, default='ViT-B/16')
     parser.add_argument('--batch_size', type=int, default=16)
     parser.add_argument('--maxlen_enc', type=int, default=128)
@@ -36,11 +42,21 @@ def main():
     args = parser.parse_args()
 
     # Load cache
-    cache = []
-    with open(args.textfile) as f:
-        for line in f:
-            cache.append(line.strip())
-    cache_emb = np.load(args.embfile)
+    if args.index_dir:
+        fname = os.path.join(args.index_dir, 'args.txt')
+        with open(fname, 'r') as f:
+            index_args = json.load(f)
+            for key in list(index_args.keys()):
+                if key not in args.__dict__.keys():
+                    args.__dict__[key] = index_args[key]
+        cache = clipgrams.TextDataset(folder=args.text_dir, args=args).data
+        cache_emb = clipgrams.load_index(args)
+    else:
+        cache = []
+        with open(args.textfile) as f:
+            for line in f:
+                cache.append(line.strip())
+        cache_emb = np.load(args.embfile)
 
     # Load image preprocessor
     preprocess = clip.load(args.clip_model, jit=False)[1]

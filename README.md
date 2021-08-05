@@ -24,10 +24,11 @@ Install requirements:
 pip install -r requirements.txt
 ```
 
-Clone CLIP into this project's repository:
+Clone CLIP and clip-grams into this project's repository:
 
 ```
 git clone https://github.com/openai/CLIP
+git clone https://github.com/dzryk/clip-grams.git
 ```
 
 Download COCO dataset. Inside `download_coco.sh`, set download_dir to a location where you want to store the data. Then run:
@@ -43,11 +44,7 @@ wget -m -np -c -U "eye02" -w 2 -R "index.html*" "https://the-eye.eu/public/AI/mo
 wget -m -np -c -U "eye02" -w 2 -R "index.html*" "https://the-eye.eu/public/AI/models/antarctic-captions/postcache.npy"
 ```
 
-To compute a new cache using COCO, run the following. A cache consists of two files: a txt file containing one entry on each line as well as a .npy file containing CLIP embeddings for each line. Full list of settings can be found in `compute_cache.py`.
-
-```
-python3 compute_cache.py --datadir=[path to train folder] --textfile=[path to save text] --embfile=[path to save numpy file]
-```
+Here, a cache consists of two files: a txt file containing one entry on each line as well as a .npy file containing CLIP embeddings for each line. 
 
 To train a model
 
@@ -69,7 +66,7 @@ Full list of settings are found in `sampler.py`. NOTE: this function differs tha
 
 ## Custom cache
 
-A custom cache simply requires a text file of entries and a numpy array of their CLIP embeddings. You can use helper functions in `utils.py` to help with this, or do this separately. Once they are available they can be passed into training, sampling or the colab.
+A custom cache can be computed using the [clip-grams](https://github.com/dzryk/clip-grams) repo. This will compute a Faiss knn index using autofaiss. Once an index is computed, you can pass `index_dir=[path to index folder]` to both the trainer and sampler functions to make use of the index.
 
 You can also augment new entries to the existing cache. For example, by adding "Geoff Hinton", the model can recognize some images of Geoff. This is a direct result of CLIP's capacity to align images and text. See [here](https://twitter.com/dzryk/status/1420432987481591819) for a sample output.
 

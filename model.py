@@ -37,12 +37,16 @@ class Model(pl.LightningModule):
             p.requires_grad = False
     
     def compute_loss(self, x, y):
-        cache_emb = torch.tensor(self.cache_emb, device=self.device)
+        if not self.hparams.index_dir:
+            cache_emb = torch.tensor(self.cache_emb, device=self.device)
+        else:
+            cache_emb = self.cache_emb
         x = utils.build_table(x, 
                               perceiver=self.perceiver,
                               cache=self.cache,
                               cache_emb=cache_emb,
-                              topk=self.hparams.topk)
+                              topk=self.hparams.topk,
+                              index_dir=self.hparams.index_dir)
         
         enc_inputs = self.tokenizer(x,
                                     padding="max_length",

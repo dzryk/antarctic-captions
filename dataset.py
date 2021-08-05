@@ -166,38 +166,3 @@ class DataModule(pl.LightningDataModule):
             num_workers=self.nworkers,
             collate_fn=dl_collate_fn,
             pin_memory=True)
-
-
-def get_cache(args):
-    """
-    Computes each entries from a DataLoader. Bigrams are
-    selected based on PMI and the topk are selected.
-
-    This function will be depreciated in the future in favor
-    of using knn indices from the clip-grams repo.
-    """
-    loader = TextImageDataset(args.datadir, is_eval=True, all_captions=True)
-    loader = DataLoader(loader,
-                        batch_size=args.batch_size,
-                        shuffle=True,
-                        collate_fn=dl_collate_fn)
-    cache = []
-    for batch in loader:
-        for x in batch[1]:
-            for sent in x:
-                wordlist = nltk.wordpunct_tokenize(sent)
-                wordlist = [w.lower() for w in wordlist]
-                cache.extend(wordlist)
-
-    # Unigrams
-    unigrams = collections.Counter(cache).most_common(args.topk)
-    unigrams = [t[0] for t in unigrams]
-    
-    # Bigrams
-    bigram_measures = nltk.collocations.BigramAssocMeasures()
-    finder = nltk.collocations.BigramCollocationFinder.from_words(cache)
-    finder.apply_freq_filter(3)
-    bigrams = finder.nbest(bigram_measures.pmi, args.topk)
-    bigrams = [' '.join(g) for g in bigrams]
-
-    return unigrams + bigrams
